@@ -19,18 +19,17 @@ RUN add-apt-repository ppa:git-core/ppa
 # Update package list and install the latest stable Git version
 RUN apt-get update && apt-get install -y git
 
-# Install Node.js 18.18.0
-RUN wget https://nodejs.org/dist/v18.18.0/node-v18.18.0-linux-x64.tar.xz \
-    && tar -xJf node-v18.18.0-linux-x64.tar.xz -C /usr/local --strip-components=1 \
-    && rm node-v18.18.0-linux-x64.tar.xz
+# Install Node.js 24.18.0
+RUN wget https://nodejs.org/dist/v24.18.0/node-v24.18.0-linux-x64.tar.xz \
+    && tar -xJf node-v24.18.0-linux-x64.tar.xz -C /usr/local --strip-components=1 \
+    && rm node-v24.18.0-linux-x64.tar.xz
 
 # Update npm to 9.8.1 and install Yarn, pnpm, node-gyp, and eas-cli
 RUN npm install -g npm@9.8.1 \
     && npm install -g yarn@1.22.21 pnpm@9.3.0 node-gyp@10.1.0 eas-cli
 
-# Install Bun 1.1.13 using wget
-ENV BUN_INSTALL /usr/local
-RUN wget -qO- https://bun.sh/install | bash -s "bun-v1.1.13"
+# Install Bun
+RUN npm install -g bun
 
 # Install Android NDK r26b
 RUN wget https://dl.google.com/android/repository/android-ndk-r26b-linux.zip \
@@ -52,7 +51,7 @@ ENV PATH $PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-too
 
 # Install required Android SDK components
 RUN yes | sdkmanager --licenses \
-    && sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+    && sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
 # Hardcode the EAS build command with a default profile
 CMD ["bash", "-c", "eas build --platform android --local --profile ${PROFILE:-development}"]
